@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
-using PhoneBookApi;
 using PhoneBookApi.Data;
 using PhoneBookApi.Handlers;
 using System.Text;
@@ -11,49 +10,58 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        //CreateHostBuilder(args).Build().Run();
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
 
-        builder.Services.AddControllers();
+        IServiceCollection services = builder.Services;
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+        });
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
 
-        var jwtSecret = builder.Configuration["Jwt:SecretKey"]!;
 
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
+                var jwtSettings = builder.Configuration.GetSection("Jwt");
+                var secret = jwtSettings["SecretKey"]!;
+                var issuer = jwtSettings["Issuer"]!;
+                var audience = jwtSettings["Audience"]!;
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtSecret)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
+                        Encoding.UTF8.GetBytes(secret)),
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
+                    ValidateAudience = true,
+                    ValidAudience = audience,
                     ClockSkew = TimeSpan.Zero
                 };
             });
-        builder.Services.Configure<MongoDbSettings>(
+        services.Configure<MongoDbSettings>(
             builder.Configuration.GetSection("MongoDbSettings"));
 
-        builder.Services.AddSingleton<IMongoClient>(sp =>
+        services.AddSingleton<IMongoClient>(sp =>
         {
             var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
             return new MongoClient(settings.ConnectionString);
         });
 
-        builder.Services.AddSingleton(sp =>
+        services.AddSingleton(sp =>
         {
             var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
             var client = sp.GetRequiredService<IMongoClient>();
             return client.GetDatabase(settings.DatabaseName);
         });
 
-        builder.Services.AddSingleton<DataHandler>();
-        builder.Services.AddSingleton<JwtHandler>();
+        services.AddSingleton<DataHandler>();
+        services.AddSingleton<JwtHandler>();
 
 
         var app = builder.Build();
@@ -73,11 +81,4 @@ internal class Program
 
         app.Run();
     }
-
-    //public static IHostBuilder CreateHostBuilder(string[] args) =>
-    //       Host.CreateDefaultBuilder(args)
-    //           .ConfigureWebHostDefaults(webBuilder =>
-    //           {
-    //               webBuilder.UseStartup<Startup>(); // Use your Startup class here
-    //           });
 }

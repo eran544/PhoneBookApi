@@ -27,6 +27,7 @@ namespace PhoneBookApi.Handlers
                     FirstName = request.FirstName,
                     LastName = request.LastName,
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                    CreatedAt = DateTime.UtcNow
                 };
                 await usersCollection.InsertOneAsync(user);
                 return user;
@@ -41,7 +42,7 @@ namespace PhoneBookApi.Handlers
         public bool TryGetUser(LoginRequest request, out User? user)
         {
             var username = request.Username;
-            user = user = usersCollection
+                user = usersCollection
                 .AsQueryable()
                 .FirstOrDefault(u => u.Username == username);
             if (user != null)
