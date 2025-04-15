@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PhoneBookApi.DTOs;
+using PhoneBookApi.DTOs.Requests;
 using PhoneBookApi.DTOs.Responses;
 using PhoneBookApi.Handlers;
 using PhoneBookApi.Models;
@@ -20,10 +20,6 @@ namespace PhoneBookApi.Controllers
             {
                 return BadRequest();
             }
-            if (!DavaValidatorHandler.IsValidEmail(request.Email))
-            {
-                return BadRequest("Email format is invalid");
-            }
             var user = await _dataHandler.RegisterUser(request);
             if (user == null)
             {
@@ -41,7 +37,6 @@ namespace PhoneBookApi.Controllers
                 token = token,
                 expiresIn = 3600,
                 username = user.Username,
-                Role = user.Role,
             };
             return Ok(response);
         }

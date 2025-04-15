@@ -1,4 +1,4 @@
-﻿using PhoneBookApi.DTOs;
+﻿using PhoneBookApi.DTOs.Requests;
 
 namespace PhoneBookApi.Repositories
 {

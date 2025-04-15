@@ -1,5 +1,7 @@
 ﻿using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson;
+using PhoneBookApi.DTOs.Responses;
 using PhoneBookApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -72,6 +74,20 @@ namespace PhoneBookApi.Handlers
             {
                 return null;
             }
+        }
+
+        public static (ObjectId?, Role) GetUserIdAndRole(ClaimsPrincipal principal)
+        {
+            var userIdString = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            _ = ObjectId.TryParse(userIdString, out var userId);
+            var roleString = principal.FindFirst(ClaimTypes.Role)?.Value;
+            Role role = Role.User;
+            if (!string.IsNullOrEmpty(roleString) &&
+                Enum.TryParse<Role>(roleString, ignoreCase: true, out var parsedRole))
+            {
+                role = parsedRole;
+            }
+            return (userId, role);
         }
     }
 }

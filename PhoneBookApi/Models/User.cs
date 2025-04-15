@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using System.ComponentModel.DataAnnotations;
 
 namespace PhoneBookApi.Models
 {
@@ -13,6 +14,7 @@ namespace PhoneBookApi.Models
         [BsonElement("passwordHash")]
         public string PasswordHash { get; set; } = null!;
         [BsonElement("email")]
+        [EmailAddress]
         public string Email { get; set; } = null!;
         [BsonElement("firstName")]
         public string FirstName { get; set; } = null!;

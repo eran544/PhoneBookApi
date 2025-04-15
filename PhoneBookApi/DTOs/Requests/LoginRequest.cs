@@ -1,4 +1,4 @@
-﻿namespace PhoneBookApi.DTOs
+﻿namespace PhoneBookApi.DTOs.Requests
 {
     public class LoginRequest
     {
