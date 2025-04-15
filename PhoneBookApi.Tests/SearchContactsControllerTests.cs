@@ -1,12 +1,10 @@
-﻿using Xunit;
-using FluentAssertions;
-using MongoDB.Bson;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using PhoneBookApi.Controllers;
+using MongoDB.Bson;
 using PhoneBookApi.DTOs.Requests;
 using PhoneBookApi.DTOs.Responses;
-using PhoneBookApi.Models;
 using PhoneBookApi.Handlers;
+using PhoneBookApi.Models;
 using PhoneBookApi.Tests.Helpers;
 
 namespace PhoneBookApi.Tests

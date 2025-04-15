@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PhoneBookApi.Controllers;
 using PhoneBookApi.Handlers;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace PhoneBookApi.Tests.Helpers

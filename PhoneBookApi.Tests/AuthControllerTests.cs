@@ -7,11 +7,6 @@ using PhoneBookApi.DTOs.Requests;
 using PhoneBookApi.DTOs.Responses;
 using PhoneBookApi.Handlers;
 using PhoneBookApi.Tests.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhoneBookApi.Tests
 {

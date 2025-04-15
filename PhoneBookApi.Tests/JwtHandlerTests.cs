@@ -1,10 +1,9 @@
-﻿using Xunit;
-using FluentAssertions;
-using System.Security.Claims;
-using MongoDB.Bson;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
 using PhoneBookApi.Handlers;
 using PhoneBookApi.Models;
+using System.Security.Claims;
 
 namespace PhoneBookApi.Tests
 {

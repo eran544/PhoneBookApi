@@ -2,7 +2,6 @@
 using MongoDB.Driver;
 using PhoneBookApi.DTOs.Requests;
 using PhoneBookApi.Models;
-using System.Linq;
 
 namespace PhoneBookApi.Handlers
 {
@@ -49,7 +48,7 @@ namespace PhoneBookApi.Handlers
 
             var user = await usersCollection.Find(filter).FirstOrDefaultAsync();
             if (user != null)
-            { 
+            {
                 bool PasswordMatch = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
                 if (!PasswordMatch)
                 {

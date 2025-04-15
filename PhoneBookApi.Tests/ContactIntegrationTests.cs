@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
@@ -9,13 +8,6 @@ using PhoneBookApi.DTOs.Responses;
 using PhoneBookApi.Handlers;
 using PhoneBookApi.Models;
 using PhoneBookApi.Tests.Helpers;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhoneBookApi.Tests
 {

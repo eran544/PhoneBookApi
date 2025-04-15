@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentAssertions;
+using MongoDB.Bson;
+using PhoneBookApi.DTOs.Requests;
+using PhoneBookApi.Handlers;
+using PhoneBookApi.Tests.Helpers;
 
 namespace PhoneBookApi.Tests
 {
-    using Xunit;
-    using FluentAssertions;
-    using MongoDB.Bson;
-    using PhoneBookApi.DTOs.Requests;
-    using PhoneBookApi.Models;
-    using PhoneBookApi.Handlers;
-    using PhoneBookApi.Tests.Helpers;
-
     [Collection("MongoTest")]
     public class SearchContactsTests : MongoTestBase
     {

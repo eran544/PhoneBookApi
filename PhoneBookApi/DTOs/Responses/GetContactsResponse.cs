@@ -6,6 +6,6 @@ namespace PhoneBookApi.DTOs.Responses
     {
         public List<Contact> Contacts { get; set; } = null!;
         public int Page { get; set; }
-        
+
     }
 }

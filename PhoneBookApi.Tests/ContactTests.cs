@@ -1,7 +1,6 @@
-﻿using Xunit;
-using FluentAssertions;
-using PhoneBookApi.DTOs.Requests;
+﻿using FluentAssertions;
 using MongoDB.Bson;
+using PhoneBookApi.DTOs.Requests;
 using PhoneBookApi.Tests.Helpers;
 
 namespace PhoneBookApi.Tests

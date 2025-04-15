@@ -1,7 +1,5 @@
-﻿using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
-using PhoneBookApi.DTOs.Responses;
 using PhoneBookApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -51,13 +49,13 @@ namespace PhoneBookApi.Handlers
             var tokenHandler = new JwtSecurityTokenHandler();
             validationParameters ??= new TokenValidationParameters
             {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidIssuer = issuer,
-                    ValidateAudience = true,
-                    ValidAudience = audience,
-                    ClockSkew = TimeSpan.Zero
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidIssuer = issuer,
+                ValidateAudience = true,
+                ValidAudience = audience,
+                ClockSkew = TimeSpan.Zero
             };
 
             try

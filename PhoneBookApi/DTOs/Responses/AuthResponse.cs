@@ -1,6 +1,4 @@
-﻿using PhoneBookApi.Models;
-
-namespace PhoneBookApi.DTOs.Responses
+﻿namespace PhoneBookApi.DTOs.Responses
 {
     public class AuthResponse : BaseResponse
     {

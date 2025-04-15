@@ -3,7 +3,6 @@ using PhoneBookApi.DTOs.Requests;
 using PhoneBookApi.DTOs.Responses;
 using PhoneBookApi.Handlers;
 using PhoneBookApi.Models;
-using System.Text.RegularExpressions;
 
 namespace PhoneBookApi.Controllers
 {

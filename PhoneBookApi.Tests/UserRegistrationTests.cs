@@ -1,5 +1,4 @@
-﻿using Xunit;
-using FluentAssertions;
+﻿using FluentAssertions;
 using PhoneBookApi.DTOs.Requests;
 using PhoneBookApi.Tests.Helpers;
 

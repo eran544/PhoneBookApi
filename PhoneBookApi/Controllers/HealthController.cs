@@ -19,7 +19,7 @@ namespace PhoneBookApi.Controllers
             {
                 // Mongo has no "ping", so try listing collections
                 var collections = await _database.ListCollectionNames().ToListAsync();
-                return Ok(new { connected = true,  collections });
+                return Ok(new { connected = true, collections });
             }
             catch (Exception ex)
             {

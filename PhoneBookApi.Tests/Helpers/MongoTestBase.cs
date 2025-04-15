@@ -4,7 +4,6 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using PhoneBookApi.Handlers;
 using PhoneBookApi.Models;
-using System.IO;
 
 namespace PhoneBookApi.Tests.Helpers
 {
