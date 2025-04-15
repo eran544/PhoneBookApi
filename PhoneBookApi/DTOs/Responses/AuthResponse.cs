@@ -4,8 +4,8 @@ namespace PhoneBookApi.DTOs.Responses
 {
     public class AuthResponse : BaseResponse
     {
-        public string token { get; set; } = null!;
-        public int expiresIn { get; set; }
-        public string username { get; set; } = null!;
+        public string Token { get; set; } = null!;
+        public int ExpiresIn { get; set; }
+        public string Username { get; set; } = null!;
     }
 }

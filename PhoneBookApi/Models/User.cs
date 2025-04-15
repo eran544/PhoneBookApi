@@ -8,7 +8,7 @@ namespace PhoneBookApi.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; } = null!;
+        public ObjectId Id { get; set; }
         [BsonElement("username")]
         public string Username { get; set; } = null!;
         [BsonElement("passwordHash")]

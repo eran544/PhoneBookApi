@@ -29,7 +29,7 @@ namespace PhoneBookApi.Handlers
         {
             // Create JWT token that expires after 60 minutes
             var tokenHandler = new JwtSecurityTokenHandler();
-            var claims = new List<Claim> { new(ClaimTypes.Name, user.Id.ToString()) };
+            var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, user.Id.ToString()) };
             if (user.Role != null && user.Role != Role.User)
             {
                 claims.Add(new(ClaimTypes.Role, user.Role!.ToString()!));
@@ -79,7 +79,11 @@ namespace PhoneBookApi.Handlers
         public static (ObjectId?, Role) GetUserIdAndRole(ClaimsPrincipal principal)
         {
             var userIdString = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            _ = ObjectId.TryParse(userIdString, out var userId);
+            ObjectId? userId = null;
+            if (ObjectId.TryParse(userIdString, out ObjectId parsed))
+            {
+                userId = parsed;
+            }
             var roleString = principal.FindFirst(ClaimTypes.Role)?.Value;
             Role role = Role.User;
             if (!string.IsNullOrEmpty(roleString) &&

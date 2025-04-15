@@ -8,7 +8,8 @@ using System.Text.RegularExpressions;
 namespace PhoneBookApi.Controllers
 {
     [Route("auth")]
-    public class AuthController(DataHandler dataHandler, JwtHandler jwtHandler) : Controller
+    [ApiController]
+    public class AuthController(DataHandler dataHandler, JwtHandler jwtHandler) : ControllerBase
     {
         private readonly DataHandler _dataHandler = dataHandler;
         private readonly JwtHandler _jwtHandler = jwtHandler;
@@ -34,9 +35,9 @@ namespace PhoneBookApi.Controllers
             var token = _jwtHandler.GenerateToken(user);
             var response = new AuthResponse()
             {
-                token = token,
-                expiresIn = 3600,
-                username = user.Username,
+                Token = token,
+                ExpiresIn = 3600,
+                Username = user.Username,
             };
             return Ok(response);
         }
@@ -48,7 +49,8 @@ namespace PhoneBookApi.Controllers
             {
                 return BadRequest();
             }
-            if (!_dataHandler.TryGetUser(request, out User? user))
+            var user = await _dataHandler.GetUser(request);
+            if (user == null)
             {
                 return BadRequest("User not found");
             }

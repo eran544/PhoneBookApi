@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /PhoneBookApi/secrets.json
+/PhoneBookApi/appsettings.test.json
+/PhoneBookApi.Tests/appsettings.Test.json

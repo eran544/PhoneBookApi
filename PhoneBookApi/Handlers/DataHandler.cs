@@ -41,14 +41,15 @@ namespace PhoneBookApi.Handlers
             }
         }
 
-        public bool TryGetUser(LoginRequest request, out User? user)
+        public async Task<User?> GetUser(LoginRequest request)
         {
             var username = request.Username;
-            user = usersCollection
-            .AsQueryable()
-            .FirstOrDefault(u => u.Username == username);
+            var filter = Builders<User>.Filter.Eq(u => u.Username, request.Username);
+
+
+            var user = await usersCollection.Find(filter).FirstOrDefaultAsync();
             if (user != null)
-            {
+            { 
                 bool PasswordMatch = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
                 if (!PasswordMatch)
                 {
@@ -57,14 +58,14 @@ namespace PhoneBookApi.Handlers
                 }
             }
 
-            return user != null;
+            return user;
         }
 
         public async Task<ObjectId?> CreateContactAsync(CreateContactRequest request, ObjectId? mongoUserId)
         {
             try
             {
-                Contact contact = new Contact()
+                Contact contact = new()
                 {
                     FirstName = request.FirstName,
                     LastName = request.LastName,
@@ -75,7 +76,7 @@ namespace PhoneBookApi.Handlers
                     UpdatedAt = DateTime.UtcNow,
                     UserId = mongoUserId
                 };
-                await contactsCollection.InsertOneAsync(contact);
+                await contactsCollection.InsertOneAsync(contact, new InsertOneOptions(), CancellationToken.None);
                 return contact.Id;
             }
             catch (Exception ex)
@@ -137,7 +138,7 @@ namespace PhoneBookApi.Handlers
 
             var contact = await contactsCollection.Find(filter).FirstOrDefaultAsync();
 
-            if (contact?.UserId == null && role != Role.Admin)
+            if (contact != null && contact.UserId == null && role != Role.Admin)
             {
                 throw new UnauthorizedAccessException($"User {userId} is not allowed to access global contact {contactId}");
             }
@@ -178,7 +179,55 @@ namespace PhoneBookApi.Handlers
 
             // Perform the update
             var replaceResult = await contactsCollection.ReplaceOneAsync(c => c.Id == contactToUpdate.Id, updatedContact);
-            return replaceResult.ModifiedCount == 1;
+            return replaceResult?.ModifiedCount == 1;
+        }
+
+        public async Task<List<Contact>> SearchContactsAsync(string query, string? searchField, int page, ObjectId? userId)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                throw new ArgumentException("Search query cannot be empty.");
+
+            if (page < 1)
+                throw new ArgumentException("Page number must be at least 1.");
+
+            const int pageSize = 10;
+            int skip = (page - 1) * pageSize;
+
+            // Normalize query
+            var normalizedQuery = query.Trim().ToLower();
+
+            // Access filter: global (UserId == null) OR owned by user
+            var accessFilter = Builders<Contact>.Filter.Or(
+                Builders<Contact>.Filter.Eq(c => c.UserId, userId),
+                Builders<Contact>.Filter.Eq(c => c.UserId, null)
+            );
+            var builder = Builders<Contact>.Filter;
+
+            // Build field-specific or full-text filter
+            FilterDefinition<Contact> searchFilter = (searchField?.ToLower()) switch
+            {
+                "firstname" => builder.Regex(c => c.FirstName, new BsonRegularExpression(normalizedQuery, "i")),
+                "lastname" => builder.Regex(c => c.LastName, new BsonRegularExpression(normalizedQuery, "i")),
+                "phonenumber" => builder.Regex(c => c.PhoneNumber, new BsonRegularExpression(normalizedQuery, "i")),
+                "email" => builder.Regex(c => c.Email, new BsonRegularExpression(normalizedQuery, "i")),
+                null or "" or "all" => builder.Or(
+                                        builder.Regex(c => c.FirstName, new BsonRegularExpression(normalizedQuery, "i")),
+                                        builder.Regex(c => c.LastName, new BsonRegularExpression(normalizedQuery, "i")),
+                                        builder.Regex(c => c.PhoneNumber, new BsonRegularExpression(normalizedQuery, "i")),
+                                        builder.Regex(c => c.Email, new BsonRegularExpression(normalizedQuery, "i"))
+                                    ),// Search across all relevant fields
+                _ => throw new ArgumentException($"Invalid searchField: {searchField}"),
+            };
+            var combinedFilter = builder.And(accessFilter, searchFilter);
+
+            var results = await contactsCollection
+                .Find(combinedFilter)
+                .SortBy(c => c.FirstName)
+                .Skip(skip)
+                .Limit(pageSize)
+                .ToListAsync();
+
+            return results;
         }
     }
 }

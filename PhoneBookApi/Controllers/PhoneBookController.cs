@@ -28,6 +28,10 @@ public class PhoneBookController : ControllerBase
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var (userId, role) = JwtHandler.GetUserIdAndRole(User);
             if (userId == null)
             {
@@ -92,6 +96,39 @@ public class PhoneBookController : ControllerBase
         {
             response.ErrorMessage = ioe.Message;
             response.Exception = ioe;
+            return BadRequest(response);
+        }
+        catch (Exception ex)
+        {
+            response.ErrorMessage = ex.Message;
+            response.Exception = ex;
+            return StatusCode(500, response);
+        }
+    }
+
+    [HttpGet("search")]
+    public async Task<ActionResult<GetContactsResponse>> SearchContacts([FromQuery] SearchContactsRequest request)
+    {
+        var response = new GetContactsResponse { Page = request.Page };
+
+        try
+        {
+            var (userId, _) = JwtHandler.GetUserIdAndRole(User);
+
+            var contacts = await _dataHandler.SearchContactsAsync(
+                request.Query,
+                request.SearchField,
+                request.Page,
+                userId
+            );
+
+            response.Contacts = contacts;
+            return Ok(response);
+        }
+        catch (ArgumentException ae)
+        {
+            response.ErrorMessage = ae.Message;
+            response.Exception = ae;
             return BadRequest(response);
         }
         catch (Exception ex)

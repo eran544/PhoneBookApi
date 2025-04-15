@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using PhoneBookApi.Data;
+using PhoneBookApi.Filters;
 using PhoneBookApi.Handlers;
 using System.Text;
 
@@ -15,7 +16,10 @@ internal class Program
         // Add services to the container.
 
         IServiceCollection services = builder.Services;
-        services.AddControllers().AddJsonOptions(options =>
+        services.AddControllers(options =>
+        {
+            options.Filters.Add<ValidateModelAttribute>();
+        }).AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
         });
