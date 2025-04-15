@@ -135,4 +135,5 @@ To test admin-only features, the following seeded user exists, and their details
 "username": "Admin",
 "email": "admin@admin.com",
 "password": "PaswordWillBeProvided1"
-}```
+}
+```
