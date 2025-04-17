@@ -23,7 +23,7 @@ namespace PhoneBookApi.Models
 
         [BsonIgnoreIfNull]
         [BsonElement("role")]
-        public Role? Role { get; set; }  // Only set for admin
+        public Role? Role { get; set; }  // Only set for admin, if role = null assums User
         [BsonElement("createdAt")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime CreatedAt { get; set; }
@@ -32,7 +32,6 @@ namespace PhoneBookApi.Models
     public enum Role
     {
         Admin,
-        IT,
-        User
+        User // If in future we would like to add the role into the FWT token or for any other purpose.
     }
 }
