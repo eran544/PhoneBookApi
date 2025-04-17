@@ -364,3 +364,5 @@ FodyWeavers.xsd
 /PhoneBookApi/secrets.json
 /PhoneBookApi/appsettings.test.json
 /PhoneBookApi.Tests/appsettings.Test.json
+.env
+/publish-test

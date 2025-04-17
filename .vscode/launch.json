@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Docker: Debug PhoneBook API",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build",
+        "program": "/app/bin/Debug/net8.0/PhoneBookApi.dll",
+        "args": [],
+        "cwd": "/app",
+        "stopAtEntry": false,
+        "env": {
+          "ASPNETCORE_ENVIRONMENT": "Development"
+        },
+        "sourceFileMap": {
+          "/app": "${workspaceFolder}/PhoneBookApi"
+        }
+      }
+    ]
+  }
+  
