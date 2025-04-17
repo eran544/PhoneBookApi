@@ -7,7 +7,7 @@ namespace PhoneBookApi.Handlers
 {
     public class DataHandler(IMongoDatabase database, ILogger<DataHandler> logger)
     {
-        private readonly IMongoDatabase _database = database;
+        //private readonly IMongoDatabase _database = database;
         private readonly IMongoCollection<User> usersCollection = database.GetCollection<User>("Users");
         private readonly IMongoCollection<Contact> contactsCollection = database.GetCollection<Contact>("Contacts");
         private readonly ILogger<DataHandler> _logger = logger;
@@ -153,7 +153,7 @@ namespace PhoneBookApi.Handlers
                 return false;
             }
             var deleteResult = await contactsCollection.DeleteOneAsync(c => c.Id == contactToDelete.Id);
-            return deleteResult.DeletedCount == 1;
+            return deleteResult?.DeletedCount == 1;
         }
 
         public async Task<bool> UpdateContactAsync(UpdateContactRequest request, ObjectId mongoUserId, Role role, ObjectId contactId)
@@ -184,10 +184,14 @@ namespace PhoneBookApi.Handlers
         public async Task<List<Contact>> SearchContactsAsync(string query, string? searchField, int page, ObjectId? userId)
         {
             if (string.IsNullOrWhiteSpace(query))
+            {
                 throw new ArgumentException("Search query cannot be empty.");
+            }
 
             if (page < 1)
+            {
                 throw new ArgumentException("Page number must be at least 1.");
+            }
 
             const int pageSize = 10;
             int skip = (page - 1) * pageSize;
@@ -203,17 +207,18 @@ namespace PhoneBookApi.Handlers
             var builder = Builders<Contact>.Filter;
 
             // Build field-specific or full-text filter
+            BsonRegularExpression regexInsensitive = new(normalizedQuery, "i");
             FilterDefinition<Contact> searchFilter = (searchField?.ToLower()) switch
             {
-                "firstname" => builder.Regex(c => c.FirstName, new BsonRegularExpression(normalizedQuery, "i")),
-                "lastname" => builder.Regex(c => c.LastName, new BsonRegularExpression(normalizedQuery, "i")),
-                "phonenumber" => builder.Regex(c => c.PhoneNumber, new BsonRegularExpression(normalizedQuery, "i")),
-                "email" => builder.Regex(c => c.Email, new BsonRegularExpression(normalizedQuery, "i")),
+                "firstname" => builder.Regex(c => c.FirstName, regexInsensitive),
+                "lastname" => builder.Regex(c => c.LastName, regexInsensitive),
+                "phonenumber" => builder.Regex(c => c.PhoneNumber, regexInsensitive),
+                "email" => builder.Regex(c => c.Email, regexInsensitive),
                 null or "" or "all" => builder.Or(
-                                        builder.Regex(c => c.FirstName, new BsonRegularExpression(normalizedQuery, "i")),
-                                        builder.Regex(c => c.LastName, new BsonRegularExpression(normalizedQuery, "i")),
-                                        builder.Regex(c => c.PhoneNumber, new BsonRegularExpression(normalizedQuery, "i")),
-                                        builder.Regex(c => c.Email, new BsonRegularExpression(normalizedQuery, "i"))
+                                        builder.Regex(c => c.FirstName, regexInsensitive),
+                                        builder.Regex(c => c.LastName, regexInsensitive),
+                                        builder.Regex(c => c.PhoneNumber, regexInsensitive),
+                                        builder.Regex(c => c.Email, regexInsensitive)
                                     ),// Search across all relevant fields
                 _ => throw new ArgumentException($"Invalid searchField: {searchField}"),
             };

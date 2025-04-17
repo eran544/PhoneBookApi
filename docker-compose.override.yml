@@ -1,0 +1,15 @@
+services:
+  phonebook-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug
+    volumes:
+      - ./PhoneBookApi:/app
+    working_dir: /app
+    command: ["dotnet", "watch", "run", "--project", "PhoneBookApi.csproj"]
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:5000"
