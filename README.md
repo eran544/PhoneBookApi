@@ -36,7 +36,7 @@ A secure, role-based contact management REST API built with **.NET 8** and **Mon
 cp .env.example .env
 ```
 
-2. (Optional) Edit `.env` to customize your secrets or database name.
+2. Edit `.env` to add your JWT secret and/or change database name and/or admin credentials.
 
 ---
 
@@ -46,7 +46,7 @@ cp .env.example .env
 docker-compose up --build
 ```
 
-- The API will be available at: http://localhost:5000
+- The API will be available at: http://localhost:5001
 - 4. (Optional) Mongo Express (GUI for DB) at:  http://localhost:8081
 ---
 
