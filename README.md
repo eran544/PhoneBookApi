@@ -43,7 +43,7 @@ cp .env.example .env
 ### 🐳 Run the Project with Docker
 
 ```
-docker-compose up --build
+docker compose --env-file .env up
 ```
 
 - The API will be available at: http://localhost:5001
@@ -93,6 +93,84 @@ Copy code
 
 ---
 
+### 📝 Example Requests
+
+#### Register a New User
+```http
+POST /auth/register
+Content-Type: application/json
+
+{
+  "username": "john_doe",  // string, required
+  "email": "john.doe@example.com",  // string, required
+  "password": "securepassword123"  // string, required
+}
+```
+
+#### Login
+```http
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",  // string, required
+  "password": "securepassword123"  // string, required
+}
+```
+
+#### Create a New Contact
+```http
+POST /phonebook/createContact
+Authorization: Bearer <your_token>
+Content-Type: application/json
+
+{
+  "firstName": "Jane",  // string, required, only letters
+  "lastName": "Doe",  // string, optional, only letters
+  "phoneNumber": "1234567890",  // string, required, only digits
+  "address": "123 Main St",  // string, optional
+  "email": "jane.doe@example.com",  // string, optional, valid email format
+  "isGlobal": false  // boolean, optional, default: false, ignored if token not aligned with admin user
+}
+```
+
+#### Search Contacts
+```http
+GET /phonebook/search?query=Jane
+Authorization: Bearer <your_token>
+```
+
+#### Update a Contact
+```http
+PUT /phonebook/{id}
+Authorization: Bearer <your_token>
+Content-Type: application/json
+
+{
+  "firstName": "Jane",  // string, optional, only letters
+  "lastName": "Smith",  // string, optional, only letters
+  "phoneNumber": "9876543210",  // string, optional, only digits
+  "address": "456 Elm St",  // string, optional
+  "email": "jane.smith@example.com"  // string, optional, valid email format
+}
+```
+
+#### Delete a Contact
+```http
+DELETE /phonebook/{id}
+Authorization: Bearer <your_token>
+```
+
+---
+
+## 🔐 Authentication
+
+All endpoints require a valid JWT token, except for `/auth/register` and `/auth/login`. Include the token in the `Authorization` header as follows:
+
+```
+Authorization: Bearer <your_token>
+```
+
 ## 🧪 Running Tests
 
 ```
@@ -128,12 +206,5 @@ Configured in `appsettings.Development.json`, `appsettings.Test.json`, or via Do
 
 ## 👤 Default Admin User
 
-To test admin-only features, the following seeded user exists, and their details will be provided seperatly:
-
-```json
-{
-"username": "Admin",
-"email": "admin@admin.com",
-"password": "PaswordWillBeProvided1"
-}
-```
+When Starting application, admin user will be created, using the ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL variables supplied in the .env file, or via the appsetting.Development.json file.
+Use those credentials to authenticate in login method, and perform admin methofs.
