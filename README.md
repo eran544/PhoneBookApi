@@ -65,9 +65,6 @@ Returns a JWT if credentials are valid.
 3. **Use the token** in your requests:
 Authorization: Bearer <your_token>
 
-yaml
-Copy code
-
 ---
 
 ## 📚 API Endpoints Overview
