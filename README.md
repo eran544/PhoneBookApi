@@ -43,7 +43,7 @@ cp .env.example .env
 ### 🐳 Run the Project with Docker
 
 ```
-docker-compose up --build
+docker compose --env-file .env up
 ```
 
 - The API will be available at: http://localhost:5001
