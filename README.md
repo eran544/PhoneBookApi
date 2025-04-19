@@ -136,9 +136,22 @@ Content-Type: application/json
 
 #### Search Contacts
 ```http
-GET /phonebook/search?query=Jane
+GET /phonebook/search
+Authorization: Bearer <your_token>
+Content-Type: application/json
+```
+
+**Query Parameters**:
+- `query` (string, required): The search term to filter contacts by first name, last name, email, or phone number.
+- `searchField` (string, optional): The specific field to search in. Possible values are `FirstName`, `LastName`, `PhoneNumber`, `Email`, or leave empty for all fields (default: all).
+- `page` (int, optional): The page number for pagination (default: 1).
+
+**Example Request**:
+```http
+GET /phonebook/search?query=Jane&searchField=FirstName&page=1
 Authorization: Bearer <your_token>
 ```
+
 
 #### Update a Contact
 ```http
